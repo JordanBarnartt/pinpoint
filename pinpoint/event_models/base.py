@@ -3,6 +3,9 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, create_model
 
 
+Event = dict[str, Any]
+
+
 class EventModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 

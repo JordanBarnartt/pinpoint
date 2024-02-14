@@ -5,7 +5,7 @@ from elasticsearch import Elasticsearch
 
 from pinpoint.event_models.zeek_intel import ZeekIntelEvent
 from pinpoint.event_sources.base import EventSourceProtocol
-from pinpoint.event_models.base import EventProtocol
+from pinpoint.event_models.base import Event
 
 _TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
 
@@ -29,7 +29,7 @@ class ZeekIntelEventSource(EventSourceProtocol):
             self.start_time = None
             self.end_time = None
 
-    def get_events(self) -> list[EventProtocol]:
+    def get_events(self) -> list[Event]:
         query: dict[str, Any] = {"query": {}}
         if self.event_id:
             query["query"]["term"] = {
@@ -45,7 +45,8 @@ class ZeekIntelEventSource(EventSourceProtocol):
             }
 
         search_results = self.client.search(index=self.index, body=query)
+
         return [
-            ZeekIntelEvent(**event["_source"])
+            ZeekIntelEvent(**event["_source"]).model_dump()
             for event in search_results["hits"]["hits"]
         ]

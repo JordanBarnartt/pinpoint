@@ -1,7 +1,7 @@
-from pinpoint.event_models.base import EventProtocol
+from pinpoint.event_models.base import Event
 
 
-def extract_pivot(event: EventProtocol, pivot: str):
+def extract_pivot(event: Event, pivot: str):
     if "." in pivot:
         pivot_split = pivot.split(".")
         event_attr = event
