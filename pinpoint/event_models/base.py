@@ -1,13 +1,18 @@
-from pydantic import BaseModel
-
 from typing import Any
+
+from pydantic import BaseModel, ConfigDict, create_model
 
 
 class EventModel(BaseModel):
-    pass
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class EventProtocol(EventModel):
-    def add_metadata(self, metadata: dict[str, Any]):
-        for key, value in metadata.items():
-            setattr(self, key, value)
+    def __getitem__(self, item: str) -> Any:
+        return getattr(self, item)
+
+    @classmethod
+    def enrich_model(cls, **new_attrs: Any) -> "type[EventProtocol]":
+        new_attrs = {k: (type(v), v) for k, v in new_attrs.items()}
+        new_model = create_model(cls.__name__, __base__=cls, **new_attrs)
+        return new_model

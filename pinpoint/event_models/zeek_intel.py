@@ -12,13 +12,13 @@ class Point(EventProtocol):
 
 
 class Geo(EventProtocol):
-    city_name: str
+    city_name: str | None = None
     continent_name: str
     country_iso_code: str
     country_name: str
     location: Point
-    region_iso_code: str
-    region_name: str
+    region_iso_code: str | None = None
+    region_name: str | None = None
 
 
 class SrcDst(EventProtocol):
@@ -34,7 +34,7 @@ class ZeekIntelEvent(EventProtocol):
     timestamp: datetime.datetime = Field(validation_alias="@timestamp")
     source: SrcDst
     destination: SrcDst
-    fuid: str = Field(validation_alias=AliasPath("zeek", "intel", "fuid"))
+    fuid: str | None = Field(validation_alias=AliasPath("zeek", "intel", "fuid"), default=None)
     matched: list[str] = Field(validation_alias=AliasPath("zeek", "intel", "matched"))
     indicator: str = Field(
         validation_alias=AliasPath("zeek", "intel", "seen", "indicator")

@@ -30,10 +30,16 @@ class PinpointPipeline:
     ):
         self.events_source = events_source
         self.time_differential = time_differential
+        self.event_enrichments = event_enrichments
         self.enrichments = enrichments
         self.events: list[EventModel] = []
 
-    def process(self) -> EventProtocol:
+    def process(self) -> list[EventProtocol]:
         events = self.events_source.get_events()
+
+        for i, event in enumerate(events):
+            if self.event_enrichments:
+                for event_enrichment in self.event_enrichments:
+                    events[i] = event_enrichment.enrich(event)
 
         return events
